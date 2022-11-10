@@ -6,11 +6,14 @@
 - https://www.kaggle.com/datasets/shebrahimi/financial-distress
 
 ## todo
-- [ ] Cancellare colonne appartamento
-- [ ] Cancellare colonne EXTERNAL_SOURCE 1 e 3
-- [ ] Cancellare righe NaN di auto/phone change/ annuity/ NAME_TYPE_SUITE/ CNT_FAMILY_MEMBERS/ EXTERNAL_SOURCE_2/ 
-- [ ] Trasformare OCCUPATION_TYPE in un factor in cui NaN è interpreato come stringa
-- [ ] Droppare i 5 casi in cui possiede la macchina ma non è segnato da quanto tempo
+- [x] Cancellare colonne appartamento
+- [x] Cancellare colonne EXTERNAL_SOURCE 1 e 3
+- [x] Cancellare righe NaN di auto/phone change/ annuity/ NAME_TYPE_SUITE/ CNT_FAMILY_MEMBERS/ EXTERNAL_SOURCE_2/ 
+- [x] Trasformare OCCUPATION_TYPE in un factor in cui NaN è interpreato come stringa
+- [x] Droppare i 5 casi in cui possiede la macchina ma non è segnato da quanto tempo
 - [ ] In GLMnet R c'è una funzione per controllare se il target è ben rappresentato dopo avere diviso il dataset in due parti per training e testing
-- [ ] Spostare di 1 i dati del credit_bureau e mettere a 0 i NaN
-- [ ] OWN_CAR_AGE va trasformato con un factor scegliendo opportunamente i bin e avendo una casella per "non ha la macchina"
+- [x] Spostare di 1 i dati del credit_bureau e mettere a 0 i NaN
+- [x] OWN_CAR_AGE va trasformato con un factor scegliendo opportunamente i bin e avendo una casella per "non ha la macchina"
+
+## clean data link
+https://drive.google.com/file/d/1vzOwq4zP1M6WGLKJTftwl-uVxNBA6mBb/view?usp=sharing
