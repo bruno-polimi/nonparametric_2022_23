@@ -15,11 +15,13 @@
 - [x] Spostare di 1 i dati del credit_bureau e mettere a 0 i NaN
 - [x] OWN_CAR_AGE va trasformato con un factor scegliendo opportunamente i bin e avendo una casella per "non ha la macchina"
 
-## clean data link
-https://drive.google.com/file/d/1vzOwq4zP1M6WGLKJTftwl-uVxNBA6mBb/view?usp=sharing
+## Links to data
 
-##Training set
-https://drive.google.com/file/d/1KCP0l760MZAvtKJKo5pF0yvTNOCIjNcP/view?usp=sharing
+### clean data
+- https://drive.google.com/file/d/1vzOwq4zP1M6WGLKJTftwl-uVxNBA6mBb/view?usp=sharing
 
-#Test set
-https://drive.google.com/file/d/1eLhO4rrlRLixCWuz1H5Fm3x2ClTKs3ox/view?usp=sharing
+### training set
+- https://drive.google.com/file/d/1KCP0l760MZAvtKJKo5pF0yvTNOCIjNcP/view?usp=sharing
+
+### test set
+- https://drive.google.com/file/d/1eLhO4rrlRLixCWuz1H5Fm3x2ClTKs3ox/view?usp=sharing
