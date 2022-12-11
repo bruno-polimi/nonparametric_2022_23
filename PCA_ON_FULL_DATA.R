@@ -8,14 +8,45 @@ for(i in 1:72){
   }
 }
 
+
 num_data=data[,c(which(vec!=0))]
 library(car)
 library(mvtnorm)
+
 #PCA
 x11()
 barplot(rapply(num_data,var)) #we must use standardized variables
+
+#pre-processing
+#create only one variables for the last 5
+AMT_REQ_CREDIT_BUREAU_TOTAL=0
+for(i in 21:26){
+  AMT_REQ_CREDIT_BUREAU_TOTAL=AMT_REQ_CREDIT_BUREAU_TOTAL+num_data[,i]
+}
+
+num_data=num_data[,-c(21:26)]
+num_data$AMT_REQ_CREDIT_BUREAU_TOTAL=AMT_REQ_CREDIT_BUREAU_TOTAL
+
+#days in years/10 and positive
+num_data$DAYS_BIRTH=-num_data$DAYS_BIRTH/360
+num_data$DAYS_EMPLOYED=-num_data$DAYS_EMPLOYED/360
+num_data$DAYS_ID_PUBLISH=-num_data$DAYS_ID_PUBLISH/360
+num_data$DAYS_LAST_PHONE_CHANGE=-num_data$DAYS_LAST_PHONE_CHANGE/360
+num_data$DAYS_REGISTRATION=-num_data$DAYS_REGISTRATION/360
+
+#scale the amount of money
+num_data$AMT_INCOME_TOTAL=log(1+num_data$AMT_INCOME_TOTAL)
+num_data$AMT_CREDIT=log(1+num_data$AMT_CREDIT)
+num_data$AMT_ANNUITY=log(1+num_data$AMT_ANNUITY)
+num_data$AMT_GOODS_PRICE=log(1+num_data$AMT_GOODS_PRICE)
+
+x11()
+barplot(rapply(num_data,var))
+
+n_data=num_data[,-c(7:10)]
+
 # We compute the standardized variables
-num_data.sd <- scale(num_data)
+num_data.sd <- scale(n_data)
 num_data.sd <- data.frame(num_data.sd)
 
 x11()
@@ -56,12 +87,26 @@ par(mfcol = c(3,2))
 for(i in 7:12) barplot(load.num_data.sd[,i], ylim = c(-1, 1), main=paste("PC",i))
 
 
+#component1: mean of wealth figures contrasting with region_client,region_clint W city
+#component2: mean of OBS and CNT
+#component3: region and wealth figures contrasting with region population relative
+#component4: mean of number of children and number of family members
+#component5: constrast between OBS and DEF
+#component6: antimean of the last phone change and credit bureau
+#component7: antimean external source and phone change against the credit bureau
+#component8: HOUR_APPR_PROCESS_START 
+#component9: external source and income total against last phone change
 
+new_data=pc.num_data.sd$scores[,c(1:9)]
+new_data=data.frame(new_data)
 
+new_data$YEAR_BIRTH=-num_data$DAYS_BIRTH
+new_data$YEAR_EMPLOYED=-num_data$DAYS_EMPLOYED
+new_data$YEAR_ID_PUBLISH=-num_data$DAYS_ID_PUBLISH
+new_data$YEAR_LAST_PHONE_CHANGE=-num_data$DAYS_LAST_PHONE_CHANGE
+new_data$YEAR_REGISTRATION=-num_data$DAYS_REGISTRATION
 
-
-
-
+#save(new_data,file="numeric_new.Rdata")
 
 
 
