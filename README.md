@@ -1,6 +1,6 @@
 # nonparametric_2022_23
 
-## lista dataset
+## link dataset kaggle
 - https://www.kaggle.com/datasets/mishra5001/credit-card
 
 ## link ad attuale presentazione
