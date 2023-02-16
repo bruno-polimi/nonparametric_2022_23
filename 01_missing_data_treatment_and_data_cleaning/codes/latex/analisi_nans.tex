@@ -1,0 +1,2898 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{analisi\_nans}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{plotly} \PY{k}{as} \PY{n+nn}{ply}
+\PY{k+kn}{import} \PY{n+nn}{plotly}\PY{n+nn}{.}\PY{n+nn}{graph\PYZus{}objects} \PY{k}{as} \PY{n+nn}{go}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{import} \PY{n+nn}{datetime}
+\PY{k+kn}{import} \PY{n+nn}{missingno}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../data/application\PYZus{}data.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        SK\_ID\_CURR  TARGET NAME\_CONTRACT\_TYPE CODE\_GENDER FLAG\_OWN\_CAR  \textbackslash{}
+0           100002       1         Cash loans           M            N
+1           100003       0         Cash loans           F            N
+2           100004       0    Revolving loans           M            Y
+3           100006       0         Cash loans           F            N
+4           100007       0         Cash loans           M            N
+{\ldots}            {\ldots}     {\ldots}                {\ldots}         {\ldots}          {\ldots}
+307506      456251       0         Cash loans           M            N
+307507      456252       0         Cash loans           F            N
+307508      456253       0         Cash loans           F            N
+307509      456254       1         Cash loans           F            N
+307510      456255       0         Cash loans           F            N
+
+       FLAG\_OWN\_REALTY  CNT\_CHILDREN  AMT\_INCOME\_TOTAL  AMT\_CREDIT  \textbackslash{}
+0                    Y             0          202500.0    406597.5
+1                    N             0          270000.0   1293502.5
+2                    Y             0           67500.0    135000.0
+3                    Y             0          135000.0    312682.5
+4                    Y             0          121500.0    513000.0
+{\ldots}                {\ldots}           {\ldots}               {\ldots}         {\ldots}
+307506               N             0          157500.0    254700.0
+307507               Y             0           72000.0    269550.0
+307508               Y             0          153000.0    677664.0
+307509               Y             0          171000.0    370107.0
+307510               N             0          157500.0    675000.0
+
+        AMT\_ANNUITY  {\ldots}  FLAG\_DOCUMENT\_18 FLAG\_DOCUMENT\_19 FLAG\_DOCUMENT\_20  \textbackslash{}
+0           24700.5  {\ldots}                 0                0                0
+1           35698.5  {\ldots}                 0                0                0
+2            6750.0  {\ldots}                 0                0                0
+3           29686.5  {\ldots}                 0                0                0
+4           21865.5  {\ldots}                 0                0                0
+{\ldots}             {\ldots}  {\ldots}               {\ldots}              {\ldots}              {\ldots}
+307506      27558.0  {\ldots}                 0                0                0
+307507      12001.5  {\ldots}                 0                0                0
+307508      29979.0  {\ldots}                 0                0                0
+307509      20205.0  {\ldots}                 0                0                0
+307510      49117.5  {\ldots}                 0                0                0
+
+       FLAG\_DOCUMENT\_21 AMT\_REQ\_CREDIT\_BUREAU\_HOUR AMT\_REQ\_CREDIT\_BUREAU\_DAY  \textbackslash{}
+0                     0                        0.0                       0.0
+1                     0                        0.0                       0.0
+2                     0                        0.0                       0.0
+3                     0                        NaN                       NaN
+4                     0                        0.0                       0.0
+{\ldots}                 {\ldots}                        {\ldots}                       {\ldots}
+307506                0                        NaN                       NaN
+307507                0                        NaN                       NaN
+307508                0                        1.0                       0.0
+307509                0                        0.0                       0.0
+307510                0                        0.0                       0.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_WEEK  AMT\_REQ\_CREDIT\_BUREAU\_MON  \textbackslash{}
+0                              0.0                        0.0
+1                              0.0                        0.0
+2                              0.0                        0.0
+3                              NaN                        NaN
+4                              0.0                        0.0
+{\ldots}                            {\ldots}                        {\ldots}
+307506                         NaN                        NaN
+307507                         NaN                        NaN
+307508                         0.0                        1.0
+307509                         0.0                        0.0
+307510                         0.0                        2.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_QRT  AMT\_REQ\_CREDIT\_BUREAU\_YEAR
+0                             0.0                         1.0
+1                             0.0                         0.0
+2                             0.0                         0.0
+3                             NaN                         NaN
+4                             0.0                         0.0
+{\ldots}                           {\ldots}                         {\ldots}
+307506                        NaN                         NaN
+307507                        NaN                         NaN
+307508                        0.0                         1.0
+307509                        0.0                         0.0
+307510                        0.0                         1.0
+
+[307511 rows x 122 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data\PYZus{}descriptions} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../data/columns\PYZus{}description.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{encoding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{latin1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{data\PYZus{}descriptions}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Unnamed: 0             Table                 Row  \textbackslash{}
+0           1  application\_data          SK\_ID\_CURR
+1           2  application\_data              TARGET
+2           5  application\_data  NAME\_CONTRACT\_TYPE
+3           6  application\_data         CODE\_GENDER
+4           7  application\_data        FLAG\_OWN\_CAR
+
+                                         Description Special
+0                           ID of loan in our sample     NaN
+1  Target variable (1 - client with payment diffi{\ldots}     NaN
+2        Identification if loan is cash or revolving     NaN
+3                               Gender of the client     NaN
+4                      Flag if the client owns a car     NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}vars} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../data/my\PYZus{}vars.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{my\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{my\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   AMT\_ANNUITY  AMT\_GOODS\_PRICE  OWN\_CAR\_AGE  CNT\_FAM\_MEMBERS  EXT\_SOURCE\_1  \textbackslash{}
+0      24700.5         351000.0          NaN              1.0      0.083037
+1      35698.5        1129500.0          NaN              2.0      0.311267
+2       6750.0         135000.0         26.0              1.0           NaN
+3      29686.5         297000.0          NaN              2.0           NaN
+4      21865.5         513000.0          NaN              1.0           NaN
+
+   EXT\_SOURCE\_2  EXT\_SOURCE\_3  APARTMENTS\_AVG  BASEMENTAREA\_AVG  \textbackslash{}
+0      0.262949      0.139376          0.0247            0.0369
+1      0.622246           NaN          0.0959            0.0529
+2      0.555912      0.729567             NaN               NaN
+3      0.650442           NaN             NaN               NaN
+4      0.322738           NaN             NaN               NaN
+
+   YEARS\_BEGINEXPLUATATION\_AVG  YEARS\_BUILD\_AVG  COMMONAREA\_AVG  \textbackslash{}
+0                       0.9722           0.6192          0.0143
+1                       0.9851           0.7960          0.0605
+2                          NaN              NaN             NaN
+3                          NaN              NaN             NaN
+4                          NaN              NaN             NaN
+
+   ELEVATORS\_AVG  ENTRANCES\_AVG  FLOORSMAX\_AVG
+0           0.00         0.0690         0.0833
+1           0.08         0.0345         0.2917
+2            NaN            NaN            NaN
+3            NaN            NaN            NaN
+4            NaN            NaN            NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{first\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{2}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{second\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{3}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{third\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{4}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{fourth\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{5}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{fifth\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_6_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_7_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_8_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}DAY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}MON}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}YEAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_9_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}ANNUITY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OCCUPATION\PYZus{}TYPE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_10_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OBS\PYZus{}30\PYZus{}CNT\PYZus{}SOCIAL\PYZus{}CIRCLE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DEF\PYZus{}30\PYZus{}CNT\PYZus{}SOCIAL\PYZus{}CIRCLE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OBS\PYZus{}60\PYZus{}CNT\PYZus{}SOCIAL\PYZus{}CIRCLE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DEF\PYZus{}60\PYZus{}CNT\PYZus{}SOCIAL\PYZus{}CIRCLE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_11_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{my\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_12_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{my\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{my\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{first\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{first\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_16_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}ANNUITY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}ANNUITY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['Loan annuity']
+[nan]
+['For consumer loans it is the price of the goods for which the loan is given']
+[nan]
+['Who was accompanying client when he was applying for the loan']
+[nan]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}ANNUITY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{displot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}helper}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{AMT\PYZus{}ANNUITY}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{kde}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.FacetGrid at 0x7f79c923ebf0>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_18_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{displot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}helper}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{kde}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.FacetGrid at 0x7f79c92636a0>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{df\PYZus{}helper}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     NAME\_TYPE\_SUITE
+0      Unaccompanied
+1             Family
+5    Spouse, partner
+8           Children
+18           Other\_A
+64               NaN
+174          Other\_B
+416  Group of people
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd}\PY{o}{.}\PY{n}{set\PYZus{}option}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{display.max\PYZus{}columns}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{k+kc}{None}\PY{p}{)}
+\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}ANNUITY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        SK\_ID\_CURR  TARGET NAME\_CONTRACT\_TYPE CODE\_GENDER FLAG\_OWN\_CAR  \textbackslash{}
+47531       155054       0         Cash loans           M            N
+50035       157917       0         Cash loans           F            N
+51594       159744       0         Cash loans           F            N
+55025       163757       0         Cash loans           F            N
+59934       169487       0         Cash loans           M            Y
+75873       187985       0         Cash loans           M            Y
+89343       203726       0         Cash loans           F            Y
+123872      243648       0         Cash loans           F            N
+207186      340147       0         Cash loans           M            N
+227939      364022       0         Cash loans           F            N
+239329      377174       0         Cash loans           F            N
+241835      379997       0         Cash loans           F            N
+
+       FLAG\_OWN\_REALTY  CNT\_CHILDREN  AMT\_INCOME\_TOTAL  AMT\_CREDIT  \textbackslash{}
+47531                N             0          180000.0    450000.0
+50035                N             0           94500.0    450000.0
+51594                N             0          202500.0    539100.0
+55025                N             0          162000.0    296280.0
+59934                N             0          202500.0    360000.0
+75873                N             0          144000.0    219249.0
+89343                N             0           90000.0    157500.0
+123872               Y             0          202500.0    929088.0
+207186               N             0          171000.0    486000.0
+227939               Y             0          315000.0    628069.5
+239329               Y             0          157500.0    792000.0
+241835               N             0          315000.0   1483231.5
+
+        AMT\_ANNUITY  AMT\_GOODS\_PRICE NAME\_TYPE\_SUITE      NAME\_INCOME\_TYPE  \textbackslash{}
+47531           NaN         450000.0   Unaccompanied  Commercial associate
+50035           NaN         450000.0   Unaccompanied               Working
+51594           NaN         450000.0   Unaccompanied               Working
+55025           NaN         225000.0   Unaccompanied         State servant
+59934           NaN         360000.0   Unaccompanied               Working
+75873           NaN         166500.0   Unaccompanied               Working
+89343           NaN         157500.0   Unaccompanied         State servant
+123872          NaN         720000.0   Unaccompanied               Working
+207186          NaN         486000.0   Unaccompanied  Commercial associate
+227939          NaN         499500.0   Unaccompanied  Commercial associate
+239329          NaN         792000.0          Family         State servant
+241835          NaN        1354500.0   Unaccompanied               Working
+
+                  NAME\_EDUCATION\_TYPE    NAME\_FAMILY\_STATUS  \textbackslash{}
+47531               Incomplete higher  Single / not married
+50035                 Lower secondary        Civil marriage
+51594   Secondary / secondary special               Married
+55025                Higher education               Married
+59934   Secondary / secondary special  Single / not married
+75873                Higher education  Single / not married
+89343   Secondary / secondary special               Married
+123872  Secondary / secondary special        Civil marriage
+207186               Higher education               Married
+227939               Higher education               Married
+239329  Secondary / secondary special               Married
+241835               Higher education               Married
+
+          NAME\_HOUSING\_TYPE  REGION\_POPULATION\_RELATIVE  DAYS\_BIRTH  \textbackslash{}
+47531     House / apartment                    0.026392      -10668
+50035     House / apartment                    0.035792       -9027
+51594     House / apartment                    0.046220      -17376
+55025     House / apartment                    0.035792      -11329
+59934     House / apartment                    0.046220      -19762
+75873      Rented apartment                    0.022800      -20831
+89343     House / apartment                    0.015221      -12134
+123872    House / apartment                    0.019689      -13902
+207186    House / apartment                    0.018634      -10151
+227939  Municipal apartment                    0.046220      -16344
+239329    House / apartment                    0.026392      -17661
+241835    House / apartment                    0.072508      -15072
+
+        DAYS\_EMPLOYED  DAYS\_REGISTRATION  DAYS\_ID\_PUBLISH  OWN\_CAR\_AGE  \textbackslash{}
+47531           -2523            -4946.0            -3238          NaN
+50035           -1270            -3640.0             -741          NaN
+51594           -3950           -11524.0             -831          NaN
+55025           -2040            -3195.0            -3069          NaN
+59934           -2498           -11285.0            -3305          4.0
+75873           -2450             -771.0            -4203          8.0
+89343           -3721             -858.0             -591          2.0
+123872          -3540             -168.0            -4250          NaN
+207186           -472           -10127.0            -2787          NaN
+227939          -1478             -482.0            -4192          NaN
+239329          -2885            -8594.0            -1221          NaN
+241835           -152            -7576.0            -4389          NaN
+
+        FLAG\_MOBIL  FLAG\_EMP\_PHONE  FLAG\_WORK\_PHONE  FLAG\_CONT\_MOBILE  \textbackslash{}
+47531            1               1                1                 1
+50035            1               1                1                 1
+51594            1               1                0                 1
+55025            1               1                0                 1
+59934            1               1                1                 1
+75873            1               1                0                 1
+89343            1               1                0                 1
+123872           1               1                0                 1
+207186           1               1                0                 1
+227939           1               1                0                 1
+239329           1               1                0                 1
+241835           1               1                1                 1
+
+        FLAG\_PHONE  FLAG\_EMAIL        OCCUPATION\_TYPE  CNT\_FAM\_MEMBERS  \textbackslash{}
+47531            1           0  High skill tech staff              1.0
+50035            0           0               Laborers              2.0
+51594            0           0          Cooking staff              2.0
+55025            0           0             Core staff              2.0
+59934            1           0               Laborers              1.0
+75873            0           0                Drivers              1.0
+89343            1           0         Medicine staff              2.0
+123872           0           1            Secretaries              2.0
+207186           1           0         Security staff              2.0
+227939           0           0            Sales staff              2.0
+239329           1           0               Managers              2.0
+241835           1           0            Accountants              2.0
+
+        REGION\_RATING\_CLIENT  REGION\_RATING\_CLIENT\_W\_CITY  \textbackslash{}
+47531                      2                            2
+50035                      2                            2
+51594                      1                            1
+55025                      2                            2
+59934                      1                            1
+75873                      2                            2
+89343                      2                            2
+123872                     2                            2
+207186                     2                            2
+227939                     1                            1
+239329                     2                            2
+241835                     1                            1
+
+       WEEKDAY\_APPR\_PROCESS\_START  HOUR\_APPR\_PROCESS\_START  \textbackslash{}
+47531                   WEDNESDAY                       13
+50035                      MONDAY                       20
+51594                   WEDNESDAY                       15
+55025                      FRIDAY                       13
+59934                      FRIDAY                       15
+75873                      FRIDAY                       15
+89343                   WEDNESDAY                       11
+123872                   SATURDAY                       12
+207186                  WEDNESDAY                       13
+227939                  WEDNESDAY                       11
+239329                   SATURDAY                       14
+241835                  WEDNESDAY                       15
+
+        REG\_REGION\_NOT\_LIVE\_REGION  REG\_REGION\_NOT\_WORK\_REGION  \textbackslash{}
+47531                            0                           0
+50035                            0                           0
+51594                            0                           0
+55025                            0                           0
+59934                            0                           1
+75873                            0                           0
+89343                            0                           0
+123872                           0                           0
+207186                           1                           1
+227939                           0                           1
+239329                           0                           0
+241835                           0                           1
+
+        LIVE\_REGION\_NOT\_WORK\_REGION  REG\_CITY\_NOT\_LIVE\_CITY  \textbackslash{}
+47531                             0                       0
+50035                             0                       0
+51594                             0                       1
+55025                             0                       1
+59934                             1                       0
+75873                             0                       0
+89343                             0                       0
+123872                            0                       0
+207186                            1                       1
+227939                            1                       0
+239329                            0                       0
+241835                            1                       0
+
+        REG\_CITY\_NOT\_WORK\_CITY  LIVE\_CITY\_NOT\_WORK\_CITY  \textbackslash{}
+47531                        0                        0
+50035                        0                        0
+51594                        1                        1
+55025                        1                        1
+59934                        1                        1
+75873                        0                        0
+89343                        0                        0
+123872                       0                        0
+207186                       1                        1
+227939                       0                        0
+239329                       0                        0
+241835                       1                        1
+
+             ORGANIZATION\_TYPE  EXT\_SOURCE\_1  EXT\_SOURCE\_2  EXT\_SOURCE\_3  \textbackslash{}
+47531   Business Entity Type 3           NaN      0.626896      0.372334
+50035   Business Entity Type 1           NaN      0.727274      0.468660
+51594            Self-employed      0.885980      0.738370      0.452534
+55025               Government      0.336803      0.566316      0.220095
+59934                    Other      0.647350      0.583947      0.177704
+75873   Business Entity Type 3      0.339389      0.667564      0.425893
+89343                 Medicine      0.682126      0.154811      0.297087
+123872           Self-employed      0.400723      0.510934      0.581484
+207186                Security           NaN      0.706306      0.391055
+227939  Business Entity Type 3           NaN      0.618698      0.431192
+239329                   Other      0.775404      0.656305      0.651260
+241835           Self-employed      0.593394      0.267269           NaN
+
+        APARTMENTS\_AVG  BASEMENTAREA\_AVG  YEARS\_BEGINEXPLUATATION\_AVG  \textbackslash{}
+47531           0.0124               NaN                       0.9662
+50035              NaN               NaN                          NaN
+51594              NaN               NaN                          NaN
+55025              NaN               NaN                          NaN
+59934           0.0856               NaN                       0.9841
+75873           0.0928            0.0719                       0.9831
+89343           0.1227               NaN                       0.9781
+123872             NaN               NaN                          NaN
+207186             NaN               NaN                          NaN
+227939          0.1918            0.1735                       0.9866
+239329             NaN               NaN                          NaN
+241835          0.3691            0.1891                       0.9806
+
+        YEARS\_BUILD\_AVG  COMMONAREA\_AVG  ELEVATORS\_AVG  ENTRANCES\_AVG  \textbackslash{}
+47531               NaN             NaN           0.00         0.0345
+50035               NaN             NaN            NaN            NaN
+51594               NaN             NaN            NaN            NaN
+55025               NaN             NaN            NaN            NaN
+59934               NaN             NaN           0.08         0.0345
+75873            0.7688          0.0113           0.00         0.2069
+89343               NaN             NaN           0.00         0.2759
+123872              NaN             NaN            NaN            NaN
+207186              NaN             NaN            NaN            NaN
+227939           0.8164          0.0464           0.12         0.1034
+239329              NaN             NaN            NaN            NaN
+241835           0.7348          0.2590           0.52         0.2241
+
+        FLOORSMAX\_AVG  FLOORSMIN\_AVG  LANDAREA\_AVG  LIVINGAPARTMENTS\_AVG  \textbackslash{}
+47531          0.0417            NaN           NaN                   NaN
+50035             NaN            NaN           NaN                   NaN
+51594             NaN            NaN           NaN                   NaN
+55025             NaN            NaN           NaN                   NaN
+59934          0.4583            NaN           NaN                   NaN
+75873          0.1667         0.0417        0.6932                0.0748
+89343          0.1667            NaN           NaN                   NaN
+123872            NaN            NaN           NaN                   NaN
+207186            NaN            NaN           NaN                   NaN
+227939         0.3333         0.0417        0.1784                0.1563
+239329            NaN            NaN           NaN                   NaN
+241835         0.5417         0.5833        0.0000                0.3009
+
+        LIVINGAREA\_AVG  NONLIVINGAPARTMENTS\_AVG  NONLIVINGAREA\_AVG  \textbackslash{}
+47531           0.0115                      NaN             0.0000
+50035              NaN                      NaN                NaN
+51594              NaN                      NaN                NaN
+55025              NaN                      NaN                NaN
+59934           0.0548                      NaN             0.1139
+75873           0.0865                   0.0039             0.0031
+89343           0.1131                      NaN             0.0044
+123872             NaN                      NaN                NaN
+207186             NaN                      NaN                NaN
+227939          0.1728                   0.0000             0.0000
+239329             NaN                      NaN                NaN
+241835          0.3756                   0.0000             0.2002
+
+        APARTMENTS\_MODE  BASEMENTAREA\_MODE  YEARS\_BEGINEXPLUATATION\_MODE  \textbackslash{}
+47531            0.0126                NaN                        0.9662
+50035               NaN                NaN                           NaN
+51594               NaN                NaN                           NaN
+55025               NaN                NaN                           NaN
+59934            0.0872                NaN                        0.9841
+75873            0.0945             0.0746                        0.9831
+89343            0.1250                NaN                        0.9782
+123872              NaN                NaN                           NaN
+207186              NaN                NaN                           NaN
+227939           0.1954             0.1800                        0.9866
+239329              NaN                NaN                           NaN
+241835           0.2216             0.1435                        0.9796
+
+        YEARS\_BUILD\_MODE  COMMONAREA\_MODE  ELEVATORS\_MODE  ENTRANCES\_MODE  \textbackslash{}
+47531                NaN              NaN          0.0000          0.0345
+50035                NaN              NaN             NaN             NaN
+51594                NaN              NaN             NaN             NaN
+55025                NaN              NaN             NaN             NaN
+59934                NaN              NaN          0.0806          0.0345
+75873             0.7779           0.0114          0.0000          0.2069
+89343                NaN              NaN          0.0000          0.2759
+123872               NaN              NaN             NaN             NaN
+207186               NaN              NaN             NaN             NaN
+227939            0.8236           0.0468          0.1208          0.1034
+239329               NaN              NaN             NaN             NaN
+241835            0.7321           0.1590          0.3222          0.1379
+
+        FLOORSMAX\_MODE  FLOORSMIN\_MODE  LANDAREA\_MODE  LIVINGAPARTMENTS\_MODE  \textbackslash{}
+47531           0.0417             NaN            NaN                    NaN
+50035              NaN             NaN            NaN                    NaN
+51594              NaN             NaN            NaN                    NaN
+55025              NaN             NaN            NaN                    NaN
+59934           0.4583             NaN            NaN                    NaN
+75873           0.1667          0.0417         0.7091                 0.0817
+89343           0.1667             NaN            NaN                    NaN
+123872             NaN             NaN            NaN                    NaN
+207186             NaN             NaN            NaN                    NaN
+227939          0.3333          0.0417         0.1825                 0.1708
+239329             NaN             NaN            NaN                    NaN
+241835          0.5417          0.5833         0.0000                 0.1938
+
+        LIVINGAREA\_MODE  NONLIVINGAPARTMENTS\_MODE  NONLIVINGAREA\_MODE  \textbackslash{}
+47531            0.0119                       NaN              0.0000
+50035               NaN                       NaN                 NaN
+51594               NaN                       NaN                 NaN
+55025               NaN                       NaN                 NaN
+59934            0.0571                       NaN              0.1206
+75873            0.0901                    0.0039              0.0033
+89343            0.1178                       NaN              0.0046
+123872              NaN                       NaN                 NaN
+207186              NaN                       NaN                 NaN
+227939           0.1800                    0.0000              0.0000
+239329              NaN                       NaN                 NaN
+241835           0.2268                    0.0000              0.0720
+
+        APARTMENTS\_MEDI  BASEMENTAREA\_MEDI  YEARS\_BEGINEXPLUATATION\_MEDI  \textbackslash{}
+47531            0.0125                NaN                        0.9662
+50035               NaN                NaN                           NaN
+51594               NaN                NaN                           NaN
+55025               NaN                NaN                           NaN
+59934            0.0864                NaN                        0.9841
+75873            0.0937             0.0719                        0.9831
+89343            0.1239                NaN                        0.9781
+123872              NaN                NaN                           NaN
+207186              NaN                NaN                           NaN
+227939           0.1936             0.1735                        0.9866
+239329              NaN                NaN                           NaN
+241835           0.3726             0.1891                        0.9806
+
+        YEARS\_BUILD\_MEDI  COMMONAREA\_MEDI  ELEVATORS\_MEDI  ENTRANCES\_MEDI  \textbackslash{}
+47531                NaN              NaN            0.00          0.0345
+50035                NaN              NaN             NaN             NaN
+51594                NaN              NaN             NaN             NaN
+55025                NaN              NaN             NaN             NaN
+59934                NaN              NaN            0.08          0.0345
+75873             0.7719           0.0113            0.00          0.2069
+89343                NaN              NaN            0.00          0.2759
+123872               NaN              NaN             NaN             NaN
+207186               NaN              NaN             NaN             NaN
+227939            0.8189           0.0467            0.12          0.1034
+239329               NaN              NaN             NaN             NaN
+241835            0.7383           0.2607            0.52          0.2241
+
+        FLOORSMAX\_MEDI  FLOORSMIN\_MEDI  LANDAREA\_MEDI  LIVINGAPARTMENTS\_MEDI  \textbackslash{}
+47531           0.0417             NaN            NaN                    NaN
+50035              NaN             NaN            NaN                    NaN
+51594              NaN             NaN            NaN                    NaN
+55025              NaN             NaN            NaN                    NaN
+59934           0.4583             NaN            NaN                    NaN
+75873           0.1667          0.0417         0.7053                 0.0761
+89343           0.1667             NaN            NaN                    NaN
+123872             NaN             NaN            NaN                    NaN
+207186             NaN             NaN            NaN                    NaN
+227939          0.3333          0.0417         0.1815                 0.1590
+239329             NaN             NaN            NaN                    NaN
+241835          0.5417          0.5833         0.0000                 0.3061
+
+        LIVINGAREA\_MEDI  NONLIVINGAPARTMENTS\_MEDI  NONLIVINGAREA\_MEDI  \textbackslash{}
+47531            0.0117                       NaN              0.0000
+50035               NaN                       NaN                 NaN
+51594               NaN                       NaN                 NaN
+55025               NaN                       NaN                 NaN
+59934            0.0558                       NaN              0.1163
+75873            0.0880                    0.0039              0.0032
+89343            0.1151                       NaN              0.0045
+123872              NaN                       NaN                 NaN
+207186              NaN                       NaN                 NaN
+227939           0.1759                    0.0000              0.0000
+239329              NaN                       NaN                 NaN
+241835           0.3824                    0.0000              0.2044
+
+           FONDKAPREMONT\_MODE  HOUSETYPE\_MODE  TOTALAREA\_MODE  \textbackslash{}
+47531                     NaN  block of flats          0.0090
+50035                     NaN             NaN             NaN
+51594                     NaN             NaN             NaN
+55025                     NaN             NaN             NaN
+59934                     NaN  block of flats          0.0679
+75873           not specified  block of flats          0.0687
+89343                     NaN  block of flats          0.1218
+123872                    NaN             NaN             NaN
+207186                    NaN             NaN             NaN
+227939       reg oper account  block of flats          0.1613
+239329                    NaN             NaN             NaN
+241835  reg oper spec account  block of flats          0.1860
+
+       WALLSMATERIAL\_MODE EMERGENCYSTATE\_MODE  OBS\_30\_CNT\_SOCIAL\_CIRCLE  \textbackslash{}
+47531        Stone, brick                  No                       1.0
+50035                 NaN                 NaN                       0.0
+51594                 NaN                 NaN                       1.0
+55025                 NaN                 NaN                       0.0
+59934        Stone, brick                  No                       0.0
+75873               Panel                  No                       0.0
+89343               Panel                  No                       0.0
+123872                NaN                 NaN                       0.0
+207186                NaN                 NaN                       0.0
+227939       Stone, brick                  No                       1.0
+239329                NaN                 NaN                       0.0
+241835       Stone, brick                  No                       0.0
+
+        DEF\_30\_CNT\_SOCIAL\_CIRCLE  OBS\_60\_CNT\_SOCIAL\_CIRCLE  \textbackslash{}
+47531                        0.0                       1.0
+50035                        0.0                       0.0
+51594                        0.0                       1.0
+55025                        0.0                       0.0
+59934                        0.0                       0.0
+75873                        0.0                       0.0
+89343                        0.0                       0.0
+123872                       0.0                       0.0
+207186                       0.0                       0.0
+227939                       0.0                       1.0
+239329                       0.0                       0.0
+241835                       0.0                       0.0
+
+        DEF\_60\_CNT\_SOCIAL\_CIRCLE  DAYS\_LAST\_PHONE\_CHANGE  FLAG\_DOCUMENT\_2  \textbackslash{}
+47531                        0.0                    -2.0                0
+50035                        0.0                  -706.0                0
+51594                        0.0                  -199.0                0
+55025                        0.0                 -2841.0                0
+59934                        0.0                  -743.0                0
+75873                        0.0                 -1986.0                0
+89343                        0.0                  -348.0                0
+123872                       0.0                 -1331.0                0
+207186                       0.0                  -295.0                0
+227939                       0.0                 -1255.0                0
+239329                       0.0                  -322.0                0
+241835                       0.0                  -504.0                0
+
+        FLAG\_DOCUMENT\_3  FLAG\_DOCUMENT\_4  FLAG\_DOCUMENT\_5  FLAG\_DOCUMENT\_6  \textbackslash{}
+47531                 0                0                1                0
+50035                 1                0                0                0
+51594                 1                0                0                0
+55025                 1                0                0                0
+59934                 0                0                0                0
+75873                 1                0                0                0
+89343                 1                0                0                0
+123872                1                0                0                0
+207186                0                0                1                0
+227939                1                0                0                0
+239329                1                0                0                0
+241835                0                0                0                0
+
+        FLAG\_DOCUMENT\_7  FLAG\_DOCUMENT\_8  FLAG\_DOCUMENT\_9  FLAG\_DOCUMENT\_10  \textbackslash{}
+47531                 0                0                0                 0
+50035                 0                0                0                 0
+51594                 0                0                0                 0
+55025                 0                0                0                 0
+59934                 0                1                0                 0
+75873                 0                0                0                 0
+89343                 0                0                0                 0
+123872                0                0                0                 0
+207186                0                0                0                 0
+227939                0                0                0                 0
+239329                0                0                0                 0
+241835                0                1                0                 0
+
+        FLAG\_DOCUMENT\_11  FLAG\_DOCUMENT\_12  FLAG\_DOCUMENT\_13  \textbackslash{}
+47531                  0                 0                 0
+50035                  0                 0                 0
+51594                  0                 0                 0
+55025                  0                 0                 0
+59934                  0                 0                 0
+75873                  0                 0                 0
+89343                  0                 0                 0
+123872                 0                 0                 0
+207186                 0                 0                 0
+227939                 0                 0                 0
+239329                 0                 0                 0
+241835                 0                 0                 0
+
+        FLAG\_DOCUMENT\_14  FLAG\_DOCUMENT\_15  FLAG\_DOCUMENT\_16  \textbackslash{}
+47531                  0                 0                 0
+50035                  0                 0                 0
+51594                  0                 0                 0
+55025                  0                 0                 0
+59934                  0                 0                 0
+75873                  0                 0                 0
+89343                  0                 0                 0
+123872                 0                 0                 0
+207186                 0                 0                 0
+227939                 0                 0                 0
+239329                 0                 0                 0
+241835                 0                 0                 0
+
+        FLAG\_DOCUMENT\_17  FLAG\_DOCUMENT\_18  FLAG\_DOCUMENT\_19  \textbackslash{}
+47531                  0                 0                 0
+50035                  0                 0                 0
+51594                  0                 0                 0
+55025                  0                 0                 0
+59934                  0                 0                 0
+75873                  0                 0                 0
+89343                  0                 0                 0
+123872                 0                 0                 0
+207186                 0                 0                 0
+227939                 0                 0                 0
+239329                 0                 0                 0
+241835                 0                 0                 0
+
+        FLAG\_DOCUMENT\_20  FLAG\_DOCUMENT\_21  AMT\_REQ\_CREDIT\_BUREAU\_HOUR  \textbackslash{}
+47531                  0                 0                         0.0
+50035                  0                 0                         0.0
+51594                  0                 0                         0.0
+55025                  0                 0                         0.0
+59934                  0                 0                         0.0
+75873                  0                 0                         0.0
+89343                  0                 0                         0.0
+123872                 0                 0                         0.0
+207186                 0                 0                         0.0
+227939                 0                 0                         0.0
+239329                 0                 0                         0.0
+241835                 0                 0                         NaN
+
+        AMT\_REQ\_CREDIT\_BUREAU\_DAY  AMT\_REQ\_CREDIT\_BUREAU\_WEEK  \textbackslash{}
+47531                         0.0                         0.0
+50035                         0.0                         0.0
+51594                         0.0                         0.0
+55025                         0.0                         0.0
+59934                         0.0                         1.0
+75873                         0.0                         0.0
+89343                         0.0                         0.0
+123872                        0.0                         0.0
+207186                        0.0                         1.0
+227939                        0.0                         1.0
+239329                        0.0                         0.0
+241835                        NaN                         NaN
+
+        AMT\_REQ\_CREDIT\_BUREAU\_MON  AMT\_REQ\_CREDIT\_BUREAU\_QRT  \textbackslash{}
+47531                         0.0                        1.0
+50035                         1.0                        0.0
+51594                         1.0                        0.0
+55025                         1.0                        0.0
+59934                         0.0                        0.0
+75873                         0.0                        0.0
+89343                         2.0                        0.0
+123872                        0.0                        1.0
+207186                        1.0                        0.0
+227939                        0.0                        0.0
+239329                        0.0                        1.0
+241835                        NaN                        NaN
+
+        AMT\_REQ\_CREDIT\_BUREAU\_YEAR
+47531                          1.0
+50035                          1.0
+51594                          1.0
+55025                          4.0
+59934                          6.0
+75873                         11.0
+89343                          0.0
+123872                         5.0
+207186                         2.0
+227939                         2.0
+239329                         1.0
+241835                         NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pd}\PY{o}{.}\PY{n}{reset\PYZus{}option}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max\PYZus{}columns}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Ci sono 12 entrate che hanno AMT\_ANNUITY a NaN, sono numeri, e non
+sembra chiara una scelta da sostituire al NaN, soprattutto in vista
+della forma dell'istogramma, non riesco neanche a immaginarmi
+spiegazioni sensate del perché questo dato possa mancare se non errore
+di inserimento. Non riesco a trovare colonne del dataset che sembrano
+essere collegate alla mancanza di questo dato.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df\PYZus{}helper}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     AMT\_GOODS\_PRICE NAME\_TYPE\_SUITE
+724              NaN             NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df\PYZus{}helper}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\PY{n}{df\PYZus{}helper}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        AMT\_GOODS\_PRICE NAME\_TYPE\_SUITE
+724                 NaN             NaN
+5937                NaN             NaN
+6425                NaN             NaN
+6703                NaN             NaN
+7647                NaN             NaN
+{\ldots}                 {\ldots}             {\ldots}
+304678              NaN             NaN
+304784              NaN             NaN
+305833              NaN             NaN
+306126              NaN             NaN
+306273              NaN             NaN
+
+[278 rows x 2 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df\PYZus{}helper}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}GOODS\PYZus{}PRICE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NAME\PYZus{}TYPE\PYZus{}SUITE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\PY{n}{df\PYZus{}helper}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        AMT\_GOODS\_PRICE NAME\_TYPE\_SUITE
+64             315000.0             NaN
+724                 NaN             NaN
+1199           477000.0             NaN
+1669           832500.0             NaN
+1862           243000.0             NaN
+{\ldots}                 {\ldots}             {\ldots}
+306273              NaN             NaN
+306544         894825.0             NaN
+306615         225000.0             NaN
+306636         585000.0             NaN
+306725         675000.0             NaN
+
+[1292 rows x 2 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    In tutte le entrate di AMT\_GOODS\_PRICE che contengono un NaN (278
+righe) abbiamo che non è segnato neanche la persona accompagnatrice, che
+però è un dato mancante in 1292 righe. Infatti il viceversa non vale.
+Non sembra chiaro il perché ci possa essere un collegamento tra le due
+cose, ma era già evidenziato dall'heatmap
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{second\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_28_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{second\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{second\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{n}{to\PYZus{}replace}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{value}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{nan}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{second\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{displot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}helper}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{kde}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.FacetGrid at 0x7f79d4967e20>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_30_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}helper} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DAYS\PYZus{}BIRTH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}helper}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{YEARS\PYZus{}BIRTH\PYZus{}POSITIVE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}helper}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{vec} \PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{n}{vec}\PY{p}{[}\PY{p}{:}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{365}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{displot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}helper}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{YEARS\PYZus{}BIRTH\PYZus{}POSITIVE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{kde}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.FacetGrid at 0x7f79d481cee0>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_31_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+["Age of client's car"]
+[nan]
+['Flag if the client owns a car']
+[nan]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{helper\PYZus{}df}\PY{p}{)}\PY{p}{)}
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\PY{n}{helper\PYZus{}df}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{helper\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+202929
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      FLAG\_OWN\_CAR  OWN\_CAR\_AGE
+0                N          NaN
+30897            Y          NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+\PY{n}{helper\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       FLAG\_OWN\_CAR  OWN\_CAR\_AGE
+30897             Y          NaN
+181231            Y          NaN
+217549            Y          NaN
+229867            Y          NaN
+236868            Y          NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}CAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{helper\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OWN\PYZus{}CAR\PYZus{}AGE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+\PY{n}{helper\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Empty DataFrame
+Columns: [FLAG\_OWN\_CAR, OWN\_CAR\_AGE]
+Index: []
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Per quanto riguarda OWN\_CAR\_AGE, abbiamo 202929 NaN che corrispondono
+quasi interamente a casi in cui FLAG\_OWN\_CAR è posto a N, quindi
+persone che non hanno una automobile. Tuttavia in 5 casi risulta
+FLAG\_OWN\_CAR = Y e comunque OWN\_CAR\_AGE = None, questi sono casi in
+cui effettivamente il valore manca. Il caso contrario, ovvero
+FLAG\_OWN\_CAR pari a N e OWN\_CAR\_AGE non nullo, invece, non capita
+mai.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{third\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_37_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{third\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_38_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['How many family members does client have']
+[nan]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        SK\_ID\_CURR  TARGET NAME\_CONTRACT\_TYPE CODE\_GENDER FLAG\_OWN\_CAR  \textbackslash{}
+41982       148605       0    Revolving loans           M            N
+187348      317181       0    Revolving loans           F            N
+
+       FLAG\_OWN\_REALTY  CNT\_CHILDREN  AMT\_INCOME\_TOTAL  AMT\_CREDIT  \textbackslash{}
+41982                Y             0          450000.0    675000.0
+187348               Y             0          202500.0    585000.0
+
+        AMT\_ANNUITY  {\ldots}  FLAG\_DOCUMENT\_18 FLAG\_DOCUMENT\_19 FLAG\_DOCUMENT\_20  \textbackslash{}
+41982       33750.0  {\ldots}                 0                0                0
+187348      29250.0  {\ldots}                 0                0                0
+
+       FLAG\_DOCUMENT\_21 AMT\_REQ\_CREDIT\_BUREAU\_HOUR AMT\_REQ\_CREDIT\_BUREAU\_DAY  \textbackslash{}
+41982                 0                        NaN                       NaN
+187348                0                        0.0                       0.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_WEEK  AMT\_REQ\_CREDIT\_BUREAU\_MON  \textbackslash{}
+41982                          NaN                        NaN
+187348                         0.0                        0.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_QRT  AMT\_REQ\_CREDIT\_BUREAU\_YEAR
+41982                         NaN                         NaN
+187348                        0.0                         1.0
+
+[2 rows x 122 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Empty DataFrame
+Columns: [SK\_ID\_CURR, TARGET, NAME\_CONTRACT\_TYPE, CODE\_GENDER, FLAG\_OWN\_CAR,
+FLAG\_OWN\_REALTY, CNT\_CHILDREN, AMT\_INCOME\_TOTAL, AMT\_CREDIT, AMT\_ANNUITY,
+AMT\_GOODS\_PRICE, NAME\_TYPE\_SUITE, NAME\_INCOME\_TYPE, NAME\_EDUCATION\_TYPE,
+NAME\_FAMILY\_STATUS, NAME\_HOUSING\_TYPE, REGION\_POPULATION\_RELATIVE, DAYS\_BIRTH,
+DAYS\_EMPLOYED, DAYS\_REGISTRATION, DAYS\_ID\_PUBLISH, OWN\_CAR\_AGE, FLAG\_MOBIL,
+FLAG\_EMP\_PHONE, FLAG\_WORK\_PHONE, FLAG\_CONT\_MOBILE, FLAG\_PHONE, FLAG\_EMAIL,
+OCCUPATION\_TYPE, CNT\_FAM\_MEMBERS, REGION\_RATING\_CLIENT,
+REGION\_RATING\_CLIENT\_W\_CITY, WEEKDAY\_APPR\_PROCESS\_START,
+HOUR\_APPR\_PROCESS\_START, REG\_REGION\_NOT\_LIVE\_REGION, REG\_REGION\_NOT\_WORK\_REGION,
+LIVE\_REGION\_NOT\_WORK\_REGION, REG\_CITY\_NOT\_LIVE\_CITY, REG\_CITY\_NOT\_WORK\_CITY,
+LIVE\_CITY\_NOT\_WORK\_CITY, ORGANIZATION\_TYPE, EXT\_SOURCE\_1, EXT\_SOURCE\_2,
+EXT\_SOURCE\_3, APARTMENTS\_AVG, BASEMENTAREA\_AVG, YEARS\_BEGINEXPLUATATION\_AVG,
+YEARS\_BUILD\_AVG, COMMONAREA\_AVG, ELEVATORS\_AVG, ENTRANCES\_AVG, FLOORSMAX\_AVG,
+FLOORSMIN\_AVG, LANDAREA\_AVG, LIVINGAPARTMENTS\_AVG, LIVINGAREA\_AVG,
+NONLIVINGAPARTMENTS\_AVG, NONLIVINGAREA\_AVG, APARTMENTS\_MODE, BASEMENTAREA\_MODE,
+YEARS\_BEGINEXPLUATATION\_MODE, YEARS\_BUILD\_MODE, COMMONAREA\_MODE, ELEVATORS\_MODE,
+ENTRANCES\_MODE, FLOORSMAX\_MODE, FLOORSMIN\_MODE, LANDAREA\_MODE,
+LIVINGAPARTMENTS\_MODE, LIVINGAREA\_MODE, NONLIVINGAPARTMENTS\_MODE,
+NONLIVINGAREA\_MODE, APARTMENTS\_MEDI, BASEMENTAREA\_MEDI,
+YEARS\_BEGINEXPLUATATION\_MEDI, YEARS\_BUILD\_MEDI, COMMONAREA\_MEDI, ELEVATORS\_MEDI,
+ENTRANCES\_MEDI, FLOORSMAX\_MEDI, FLOORSMIN\_MEDI, LANDAREA\_MEDI,
+LIVINGAPARTMENTS\_MEDI, LIVINGAREA\_MEDI, NONLIVINGAPARTMENTS\_MEDI,
+NONLIVINGAREA\_MEDI, FONDKAPREMONT\_MODE, HOUSETYPE\_MODE, TOTALAREA\_MODE,
+WALLSMATERIAL\_MODE, EMERGENCYSTATE\_MODE, OBS\_30\_CNT\_SOCIAL\_CIRCLE,
+DEF\_30\_CNT\_SOCIAL\_CIRCLE, OBS\_60\_CNT\_SOCIAL\_CIRCLE, DEF\_60\_CNT\_SOCIAL\_CIRCLE,
+DAYS\_LAST\_PHONE\_CHANGE, FLAG\_DOCUMENT\_2, FLAG\_DOCUMENT\_3, FLAG\_DOCUMENT\_4,
+FLAG\_DOCUMENT\_5, {\ldots}]
+Index: []
+
+[0 rows x 122 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{CNT\PYZus{}FAM\PYZus{}MEMBERS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        SK\_ID\_CURR  TARGET NAME\_CONTRACT\_TYPE CODE\_GENDER FLAG\_OWN\_CAR  \textbackslash{}
+0           100002       1         Cash loans           M            N
+2           100004       0    Revolving loans           M            Y
+4           100007       0         Cash loans           M            N
+9           100012       0    Revolving loans           M            N
+15          100019       0         Cash loans           M            Y
+{\ldots}            {\ldots}     {\ldots}                {\ldots}         {\ldots}          {\ldots}
+307504      456248       0         Cash loans           F            N
+307505      456249       0         Cash loans           F            N
+307506      456251       0         Cash loans           M            N
+307507      456252       0         Cash loans           F            N
+307508      456253       0         Cash loans           F            N
+
+       FLAG\_OWN\_REALTY  CNT\_CHILDREN  AMT\_INCOME\_TOTAL  AMT\_CREDIT  \textbackslash{}
+0                    Y             0          202500.0    406597.5
+2                    Y             0           67500.0    135000.0
+4                    Y             0          121500.0    513000.0
+9                    Y             0          135000.0    405000.0
+15                   Y             0          157500.0    299772.0
+{\ldots}                {\ldots}           {\ldots}               {\ldots}         {\ldots}
+307504               Y             0          153000.0    331920.0
+307505               Y             0          112500.0    225000.0
+307506               N             0          157500.0    254700.0
+307507               Y             0           72000.0    269550.0
+307508               Y             0          153000.0    677664.0
+
+        AMT\_ANNUITY  {\ldots}  FLAG\_DOCUMENT\_18 FLAG\_DOCUMENT\_19 FLAG\_DOCUMENT\_20  \textbackslash{}
+0           24700.5  {\ldots}                 0                0                0
+2            6750.0  {\ldots}                 0                0                0
+4           21865.5  {\ldots}                 0                0                0
+9           20250.0  {\ldots}                 0                0                0
+15          20160.0  {\ldots}                 0                0                0
+{\ldots}             {\ldots}  {\ldots}               {\ldots}              {\ldots}              {\ldots}
+307504      16096.5  {\ldots}                 0                0                0
+307505      22050.0  {\ldots}                 0                0                0
+307506      27558.0  {\ldots}                 0                0                0
+307507      12001.5  {\ldots}                 0                0                0
+307508      29979.0  {\ldots}                 0                0                0
+
+       FLAG\_DOCUMENT\_21 AMT\_REQ\_CREDIT\_BUREAU\_HOUR AMT\_REQ\_CREDIT\_BUREAU\_DAY  \textbackslash{}
+0                     0                        0.0                       0.0
+2                     0                        0.0                       0.0
+4                     0                        0.0                       0.0
+9                     0                        NaN                       NaN
+15                    0                        0.0                       0.0
+{\ldots}                 {\ldots}                        {\ldots}                       {\ldots}
+307504                0                        NaN                       NaN
+307505                0                        0.0                       0.0
+307506                0                        NaN                       NaN
+307507                0                        NaN                       NaN
+307508                0                        1.0                       0.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_WEEK  AMT\_REQ\_CREDIT\_BUREAU\_MON  \textbackslash{}
+0                              0.0                        0.0
+2                              0.0                        0.0
+4                              0.0                        0.0
+9                              NaN                        NaN
+15                             0.0                        0.0
+{\ldots}                            {\ldots}                        {\ldots}
+307504                         NaN                        NaN
+307505                         0.0                        2.0
+307506                         NaN                        NaN
+307507                         NaN                        NaN
+307508                         0.0                        1.0
+
+        AMT\_REQ\_CREDIT\_BUREAU\_QRT  AMT\_REQ\_CREDIT\_BUREAU\_YEAR
+0                             0.0                         1.0
+2                             0.0                         0.0
+4                             0.0                         0.0
+9                             NaN                         NaN
+15                            0.0                         1.0
+{\ldots}                           {\ldots}                         {\ldots}
+307504                        NaN                         NaN
+307505                        0.0                         0.0
+307506                        NaN                         NaN
+307507                        NaN                         NaN
+307508                        0.0                         1.0
+
+[67847 rows x 122 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Ci sono esattamente due casi in cui CNT\_FAM\_MEMBERS risulta pari a
+NaN, sembrano dei chiari errori di inserimento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{fourth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_44_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{fourth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_45_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['Normalized score from external data source']
+['normalized']
+['Normalized score from external data source']
+['normalized']
+['Normalized score from external data source']
+['normalized']
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{markers}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{*}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.PairGrid at 0x7f79cd1fc370>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_47_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mf}{0.0005272653}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mf}{0.0005272652}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+173378
+660
+60965
+886
+0
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{p}{[}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mf}{0.0005272653}\PY{p}{]}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{EXT\PYZus{}SOURCE\PYZus{}3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        EXT\_SOURCE\_3
+374         0.000527
+970         0.000527
+991         0.000527
+1152        0.000527
+1283        0.000527
+{\ldots}              {\ldots}
+305434      0.000527
+305726      0.000527
+306408      0.000527
+306430      0.000527
+306557      0.000527
+
+[886 rows x 1 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Purtroppo non c'è nessuna spiegazione di questi dati, che contengono un
+sacco di entrate pari a NaN. Inoltre EXT\_SOURCE\_3 ha 886 sospette
+entrate molto vicine a 0
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{fifth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{fifth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_52_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{fifth\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_53_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{5}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='APARTMENTS\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_54_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='BASEMENTAREA\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_55_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='YEARS\_BEGINEXPLUATATION\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_56_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='YEARS\_BUILD\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_57_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='COMMONAREA\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_58_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='ELEVATORS\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_59_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='ENTRANCES\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_60_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='FLOORSMAX\_AVG', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_61_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{APARTMENTS\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{APARTMENTS\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{BASEMENTAREA\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{BASEMENTAREA\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{YEARS\PYZus{}BEGINEXPLUATATION\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{YEARS\PYZus{}BEGINEXPLUATATION\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{YEARS\PYZus{}BUILD\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{YEARS\PYZus{}BUILD\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{COMMONAREA\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{COMMONAREA\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ELEVATORS\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ELEVATORS\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ENTRANCES\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ENTRANCES\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLOORSMAX\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Description}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLOORSMAX\PYZus{}AVG}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Special}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+['Normalized information about building where the client lives, What is average
+(\_AVG suffix), modus (\_MODE suffix), median (\_MEDI suffix) apartment size,
+common area, living area, age of building, number of elevators, number of
+entrances, state of the building, number of floor']
+['normalized']
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sixth\PYZus{}df} \PY{o}{=} \PY{n}{fifth\PYZus{}df}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{sixth\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}REALTY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}REALTY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{sixth\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}REALTY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{n}{to\PYZus{}replace}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{N}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{value}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{nan}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{sixth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_64_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{sixth\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_65_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{sixth\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_66_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    A quanto pare non c'è legame tra FLAG\_OWN\_REALTY e queste variabili
+relative al luogo di abitazione
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sixth\PYZus{}df}\PY{p}{[}\PY{n}{sixth\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{FLAG\PYZus{}OWN\PYZus{}REALTY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        APARTMENTS\_AVG  BASEMENTAREA\_AVG  YEARS\_BEGINEXPLUATATION\_AVG  \textbackslash{}
+1               0.0959            0.0529                       0.9851
+13              0.1474            0.0973                       0.9806
+16                 NaN               NaN                          NaN
+22              0.0907            0.0795                       0.9786
+24              0.1433            0.1455                       0.9861
+{\ldots}                {\ldots}               {\ldots}                          {\ldots}
+307494             NaN               NaN                          NaN
+307495          0.0742               NaN                       0.9871
+307496             NaN               NaN                          NaN
+307506          0.2021            0.0887                       0.9876
+307510          0.0742            0.0526                       0.9881
+
+        YEARS\_BUILD\_AVG  COMMONAREA\_AVG  ELEVATORS\_AVG  ENTRANCES\_AVG  \textbackslash{}
+1                0.7960          0.0605           0.08         0.0345
+13               0.7348          0.0582           0.16         0.1379
+16                  NaN             NaN            NaN            NaN
+22               0.7076          0.0120           0.00         0.2069
+24               0.8096          0.0212           0.00         0.3103
+{\ldots}                 {\ldots}             {\ldots}            {\ldots}            {\ldots}
+307494              NaN             NaN            NaN            NaN
+307495              NaN          0.0136           0.08         0.0690
+307496              NaN             NaN            NaN            NaN
+307506           0.8300          0.0202           0.22         0.1034
+307510              NaN          0.0176           0.08         0.0690
+
+        FLOORSMAX\_AVG FLAG\_OWN\_REALTY
+1              0.2917             NaN
+13             0.3333             NaN
+16                NaN             NaN
+22             0.1667             NaN
+24             0.1667             NaN
+{\ldots}               {\ldots}             {\ldots}
+307494            NaN             NaN
+307495         0.3333             NaN
+307496            NaN             NaN
+307506         0.6042             NaN
+307510         0.3750             NaN
+
+[94199 rows x 9 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Boh provo intanto a togliere tutte le righe in cui sono presenti tutti
+NaN relativi alle colonne relative al luogo di abitazione
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{47}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{93}\PY{p}{)}\PY{p}{]}
+\PY{n}{vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}vars\PYZus{}abitazione}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{vars\PYZus{}abitazione}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{any}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+\PY{n}{aux} \PY{o}{=} \PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{n}{my\PYZus{}vars}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Category}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{5}\PY{p}{]}
+\PY{n}{my\PYZus{}vars\PYZus{}vec} \PY{o}{=} \PY{n}{aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{seventh\PYZus{}df} \PY{o}{=} \PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{my\PYZus{}vars\PYZus{}vec}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{seventh\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+145755
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        APARTMENTS\_AVG  BASEMENTAREA\_AVG  YEARS\_BEGINEXPLUATATION\_AVG  \textbackslash{}
+0               0.0247            0.0369                       0.9722
+1               0.0959            0.0529                       0.9851
+12              0.0825               NaN                       0.9811
+13              0.1474            0.0973                       0.9806
+14              0.3495            0.1335                       0.9985
+{\ldots}                {\ldots}               {\ldots}                          {\ldots}
+307506          0.2021            0.0887                       0.9876
+307507          0.0247            0.0435                       0.9727
+307508          0.1031            0.0862                       0.9816
+307509          0.0124               NaN                       0.9771
+307510          0.0742            0.0526                       0.9881
+
+        YEARS\_BUILD\_AVG  COMMONAREA\_AVG  ELEVATORS\_AVG  ENTRANCES\_AVG  \textbackslash{}
+0                0.6192          0.0143           0.00         0.0690
+1                0.7960          0.0605           0.08         0.0345
+12                  NaN             NaN           0.00         0.2069
+13               0.7348          0.0582           0.16         0.1379
+14               0.9796          0.1143           0.40         0.1724
+{\ldots}                 {\ldots}             {\ldots}            {\ldots}            {\ldots}
+307506           0.8300          0.0202           0.22         0.1034
+307507           0.6260          0.0022           0.00         0.1034
+307508           0.7484          0.0123           0.00         0.2069
+307509              NaN             NaN            NaN         0.0690
+307510              NaN          0.0176           0.08         0.0690
+
+        FLOORSMAX\_AVG
+0              0.0833
+1              0.2917
+12             0.1667
+13             0.3333
+14             0.6667
+{\ldots}               {\ldots}
+307506         0.6042
+307507         0.0833
+307508         0.1667
+307509         0.0417
+307510         0.3750
+
+[161756 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Ci sono 145755 entrate in cui tutte le variabili relative all'abitazione
+di residenza (non solo quelle datemi dalla suddivisione) sono NaN
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{seventh\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_73_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{seventh\PYZus{}df}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_74_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{seventh\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_75_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Francamente ha senso su questo fare i plot anche considerando tutte le
+altre variabili relative all'abitazione
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{47}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{93}\PY{p}{)}\PY{p}{]}
+\PY{n}{vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}vars\PYZus{}abitazione}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{vars\PYZus{}abitazione}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{any}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+145755
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_78_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_79_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_80_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Vista la forte correlazione ha senso tenenere in considerazione
+unicamente le variabili AVG
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{73}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{47}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data\PYZus{}descriptions}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unnamed: 0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{60}\PY{p}{)}\PY{p}{]}
+\PY{n}{vars\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}vars\PYZus{}abitazione}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Row}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{vars\PYZus{}abitazione}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{df\PYZus{}abitazione} \PY{o}{=} \PY{n}{df\PYZus{}abitazione}\PY{p}{[}\PY{n}{df\PYZus{}abitazione}\PY{o}{.}\PY{n}{notna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{any}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+148810
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{bar}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_83_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{matrix}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{63}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{132}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{,}\PY{l+m+mi}{172}\PY{o}{/}\PY{l+m+mi}{255}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_84_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{76}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{n}{missingno}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{df\PYZus{}abitazione}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{76}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: >
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_85_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{77}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}DAY}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{77}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_86_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{78}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}HOUR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{78}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='AMT\_REQ\_CREDIT\_BUREAU\_HOUR', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_87_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{79}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}MON}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{79}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='AMT\_REQ\_CREDIT\_BUREAU\_MON', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_88_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{AMT\PYZus{}REQ\PYZus{}CREDIT\PYZus{}BUREAU\PYZus{}YEAR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<AxesSubplot: xlabel='AMT\_REQ\_CREDIT\_BUREAU\_YEAR', ylabel='Count'>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_89_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{helper\PYZus{}df} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{OCCUPATION\PYZus{}TYPE}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{helper\PYZus{}df}\PY{o}{.}\PY{n}{drop\PYZus{}duplicates}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{helper\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+           OCCUPATION\_TYPE
+0                 Laborers
+1               Core staff
+6              Accountants
+7                 Managers
+8                      NaN
+13                 Drivers
+21             Sales staff
+25          Cleaning staff
+26           Cooking staff
+31   Private service staff
+47          Medicine staff
+57          Security staff
+86   High skill tech staff
+89    Waiters/barmen staff
+95      Low-skill Laborers
+111          Realty agents
+114            Secretaries
+416               IT staff
+753               HR staff
+\end{Verbatim}
+\end{tcolorbox}
+        
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
